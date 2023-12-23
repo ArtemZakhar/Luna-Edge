@@ -20,7 +20,7 @@ Imagine that you are a Pokémon trainer where you have to fill out a form with y
 - Create story with storybook for at least the select component.
 - Storybook should be compatible with Tailwindcss and documentation should be similar in theme to: https://storybook.newskit.co.uk/?path=/docs/components-select--story-select-default
 - Do request with Axios to this API to extract the necessary Pokemon data: https://pokeapi.co/
-- You can use Icons from HEROICONS library.
+- You can use Icons from HEROICONS libraryry.
 - Use Yarn instead of NPM
 - In the select component you must be able to type to filter the list of Pokemon. Make this filter as you want, either inside the select component or inside the dropdown.
 - All the data should be validated and if the validation isn't correct may show an error message according to design.
