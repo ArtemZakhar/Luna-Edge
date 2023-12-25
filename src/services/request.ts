@@ -12,3 +12,18 @@ export default async function request() {
   });
   return dataForStore;
 }
+
+export async function requestForSinglePokemon(id: number) {
+  const data = await axios({
+    method: 'GET',
+    url: `https://pokeapi.co/api/v2/pokemon/${id}`,
+  });
+
+  const dataForModal = {
+    id: data.data.id,
+    name: data.data.name,
+    sprites: data.data.sprites,
+  }
+
+  return dataForModal;
+}

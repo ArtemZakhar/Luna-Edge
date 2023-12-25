@@ -20,15 +20,20 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: {
     pokemonData: [
-      { idNumber: 0, name: 'Pokemon1', url: 'https' },
-      { idNumber: 1, name: 'Pokemon2', url: 'https' },
-      { idNumber: 2, name: 'Pokemon3', url: 'https' },
-      { idNumber: 3, name: 'Pokemon4', url: 'https' },
-      { idNumber: 4, name: 'Pokemon5', url: 'https' },
+      { idNumber: 0, name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/' },
+      { idNumber: 1, name: 'ivysaur', url: 'https://pokeapi.co/api/v2/pokemon/2/' },
+      { idNumber: 2, name: 'venusaur', url: 'https://pokeapi.co/api/v2/pokemon/3/' },
+      { idNumber: 3, name: 'charmander', url: 'https://pokeapi.co/api/v2/pokemon/4/' },
+      { idNumber: 4, name: 'charmeleon', url: 'https://pokeapi.co/api/v2/pokemon/5/' },
     ],
     label: 'Label',
     clear: false,
     validation: true,
     disabled: false,
+    helpText: {
+      status: 'Team should include 4 pokemons. Remained:',
+      full: 'Team is full. The Battle can begin.',
+      error: 'Invalid pokemon name',
+    },
   },
 };

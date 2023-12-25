@@ -1,8 +1,21 @@
 import type { Preview } from '@storybook/react';
+import * as DocBlocks from '@storybook/blocks';
+import * as React from 'react';
 import '../src/index.css';
 
 const preview: Preview = {
   parameters: {
+    docs: {
+      page: () => (
+        <>
+          <DocBlocks.Title />
+          <DocBlocks.Description />
+          <DocBlocks.Subtitle />
+          <DocBlocks.Primary />
+          <DocBlocks.Stories />
+        </>
+      ),
+    },
     viewport: {
       viewports: {
         smallTel: {
