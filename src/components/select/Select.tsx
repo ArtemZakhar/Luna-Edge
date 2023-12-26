@@ -1,14 +1,23 @@
 import { InformationCircleIcon } from '@heroicons/react/24/solid';
 import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { Pokemon } from '../PokemonSlice/PokemonSlice';
+import {
+  pokemonAdded,
+  pokemonDeleted,
+  pokemonDeletedMany,
+  pokemonUpdated,
+  pokemonUpdatedMany,
+  selectAll,
+} from '../slices/TeamSlice';
+import { Pokemon } from '../slices/PokemonSlice';
 import { requestForSinglePokemon } from '../../services/request';
 
 import PokemonsList from './PokemonsList';
 import BadgeList from './BadgeList';
 import Modal from '../modal/Modal';
 
-type HelpText = {
+export type HelpText = {
   status: 'Team should include 4 pokemons. Remained:';
   full: 'Team is full. The Battle can begin.';
   error: 'Invalid pokemon name';
@@ -16,21 +25,12 @@ type HelpText = {
 
 type Props = {
   pokemonData: Pokemon[];
-  // onChange: (value: Pokemon | undefined) => void;
   label: string;
-  clear: boolean;
-  validation: boolean;
   disabled: boolean;
   helpText: HelpText;
 };
 
-export default function Select({
-  // onChange,
-  pokemonData,
-  label,
-  helpText,
-  disabled,
-}: Props) {
+export default function Select({ pokemonData, label, helpText, disabled }: Props) {
   const [showList, setShowList] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
@@ -39,14 +39,16 @@ export default function Select({
   const [searchPokemonName, setSearchPokemonName] = useState('');
   const [hightlightedIndex, setHightlightedIndex] = useState(0);
   const [chosenTeam, setChosenTeam] = useState<any[]>([]);
-  const [dataForModal, setDataForModal] = useState<any[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonOpenCloseRef = useRef<HTMLButtonElement>(null);
 
+  const team = useSelector(selectAll);
+  const dispatch = useDispatch();
   // interaction with Pokemon list
 
-  function handleSelectDisplay(): void {
+  function handleSelectDisplay(e: any): void {
+    e.preventDefault();
     if (chosenTeam.length === 4) {
       setFullTeam(true);
       return;
@@ -54,6 +56,18 @@ export default function Select({
     setShowList((list: boolean) => !list);
     setInputFocused((prev) => !prev);
   }
+
+  //interaction with input
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [inputFocused]);
+
+  function searchValue(e: any): void {
+    setSearchPokemonName(e.target.value);
+  }
+
+  //List of pokemons
 
   useEffect(() => {
     function handler(e: KeyboardEvent) {
@@ -92,29 +106,18 @@ export default function Select({
     };
   }, [hightlightedIndex, showList, pokemonData]);
 
-  //interaction with input
+  // Team members handle
 
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, [inputFocused]);
-
-  function searchValue(e: any): void {
-    setSearchPokemonName(e.target.value);
-  }
-
-  // Badge
-
-  function handleRemovePokemonFromTeam(name: string) {
+  function handleRemovePokemonFromTeam(id: number) {
     if (chosenTeam.length === 4) setFullTeam(false);
-    setChosenTeam((prev) => prev.filter((pokemon) => pokemon.name !== name));
-    setDataForModal((prev) => prev.filter((pokemon) => pokemon.name !== name));
+    setChosenTeam((prev) => prev.filter((pokemon) => pokemon.idNumber !== id));
+    dispatch(pokemonDeleted(id));
   }
-
   async function handleChoise(id: number): Promise<void> {
     let check = false;
     chosenTeam.forEach((pokemon) => {
       if (Object.values(pokemon).includes(id)) {
-        handleRemovePokemonFromTeam(pokemon.name);
+        handleRemovePokemonFromTeam(id);
         check = true;
       }
     });
@@ -129,12 +132,15 @@ export default function Select({
         Object.assign({}, ...chosenPokemon, { showDot: false }, { showClose: false }),
       ];
     });
-    const result = await requestForSinglePokemon(id + 1);
-    setDataForModal((prev) => {
-      return [...prev, { ...result, show: false }];
-    });
     setSearchPokemonName('');
     setShowList(false);
+
+    const result = await requestForSinglePokemon(id);
+    const newTeamPlayer = { ...result, show: false };
+    if (team.length === 4) {
+      return;
+    }
+    dispatch(pokemonAdded(newTeamPlayer));
   }
 
   function handleDotShow(id: number, element: string) {
@@ -151,32 +157,42 @@ export default function Select({
     });
   }
 
-  // Modal
-
-  function handleModalOpen(id: number) {
-    setDataForModal((prevState) => {
-      const showDefinedPokemon = prevState.map((pokemonData) => {
-        if (pokemonData.id === id + 1) {
-          return { ...pokemonData, show: true };
-        }
-        return { ...pokemonData, show: false };
-      });
-      return showDefinedPokemon;
+  function clearTheList() {
+    setChosenTeam([]);
+    setShowList(false);
+    setSearchPokemonName('');
+    const deletedTeam = team.map((item) => {
+      const { id } = item;
+      return id;
     });
+    dispatch(pokemonDeletedMany(deletedTeam));
+  }
+
+  // Modal
+  function handleModalOpen(id: number) {
+    dispatch(
+      pokemonUpdated({
+        id,
+        changes: { show: true },
+      })
+    );
+
     setShowModal(true);
   }
+
   function handleModalClose() {
-    setDataForModal((prevState) => {
-      const showDefinedPokemon = prevState.map((pokemonData) => {
-        return { ...pokemonData, show: false };
-      });
-      return showDefinedPokemon;
+    const showToFalse = { show: false };
+    const updatedTeam = team.map((item) => {
+      const { id } = item;
+      return { id, changes: showToFalse };
     });
+    dispatch(pokemonUpdatedMany(updatedTeam));
+
     setShowModal(false);
   }
 
   return (
-    <div className="relative">
+    <div>
       <div
         onMouseLeave={() => {
           setShowList(false);
@@ -185,7 +201,7 @@ export default function Select({
       >
         <div className="flex items-end justify-between">
           <div className="flex w-fit flex-row mt-[5px]">
-            <div className="text-[16px] pr-[5px] ">{label}</div>
+            <label className="text-[16px] pr-[5px] ">{label}</label>
             <span className="w-[20px] h-[20px]">
               <InformationCircleIcon />
             </span>
@@ -239,11 +255,7 @@ export default function Select({
           </div>
 
           <button
-            onClick={() => {
-              setChosenTeam([]);
-              setShowList(false);
-              setSearchPokemonName('');
-            }}
+            onClick={() => clearTheList()}
             className={`cursor-pointer text-[25px] text-[#000] translate-y-[-5%] ${
               chosenTeam.length > 0 ? 'block' : 'hidden'
             }`}
@@ -259,7 +271,7 @@ export default function Select({
           <ul
             className={`${
               showList ? 'block' : 'hidden'
-            } absolute w-[100%] top-[calc(100%+5px)] left-0 max-h-150px overflow-y-auto border border-grey-300 rounded-[4px] bg-white z-100`}
+            } absolute w-[100%] h-[350px] top-[calc(100%+5px)] left-0 max-h-150px overflow-y-auto border border-grey-300 rounded-[4px] bg-white z-100`}
           >
             <PokemonsList
               setHightlighted={setHightlightedIndex}
@@ -281,7 +293,9 @@ export default function Select({
             : `${helpText.status} ${4 - chosenTeam.length}`}
         </span>
       </div>
-      {showModal && <Modal data={dataForModal} close={handleModalClose} />}
+      {showModal && (
+        <Modal data={team} close={handleModalClose} showCoachName={false} showSaveButton={false} />
+      )}
     </div>
   );
 }

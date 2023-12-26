@@ -105,7 +105,7 @@ export default function Button({
   disabled,
 }: Props) {
   return (
-    <button
+    <div
       className={`${disabled ? 'bg-blue-100' : BG_color} ${
         disabled ? 'text-blue-400' : text_color
       } ${
@@ -118,6 +118,6 @@ export default function Button({
         color={`${text_color}`}
         className="w-5 absolute right-6 top-3 lg:right-8 sm:w-4 sm:top-1 sm:right-7"
       />
-    </button>
+    </div>
   );
 }

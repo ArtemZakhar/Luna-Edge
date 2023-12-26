@@ -7,8 +7,9 @@ export default async function request() {
     method: 'GET',
     url: 'https://pokeapi.co/api/v2/pokemon/?limit=300',
   });
+
   const dataForStore = data.data.results.map((item: Pokemon, i: number) => {
-    return { idNumber: i, ...item };
+    return { idNumber: i + 1, ...item };
   });
   return dataForStore;
 }
@@ -23,7 +24,7 @@ export async function requestForSinglePokemon(id: number) {
     id: data.data.id,
     name: data.data.name,
     sprites: data.data.sprites,
-  }
+  };
 
   return dataForModal;
 }

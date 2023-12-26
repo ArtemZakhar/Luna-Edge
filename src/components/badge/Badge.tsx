@@ -57,7 +57,7 @@ export type AddProps = {
 
 interface Badge extends React.HTMLProps<HTMLDivElement> {
   label: string;
-  removeItem: (name: string) => void;
+  removeItem: (id: number) => void;
   dot: boolean;
   close: boolean;
   addProps: AddProps;
@@ -82,7 +82,7 @@ export default function Badge({ label, dot, close, addProps, removeItem, modalOp
       <div className="px-[10px] text-[12px]">{label}</div>
       {close && (
         <div
-          onClick={() => removeItem(label)}
+          onClick={() => removeItem(pokemonId)}
           className={`flex translate-y-[-15%] cursor-pointer font-light rotate-45 text-[32px] leading-4 ${dot_and_close_color}`}
         >
           +

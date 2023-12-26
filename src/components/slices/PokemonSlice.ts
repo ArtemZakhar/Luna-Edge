@@ -3,7 +3,6 @@ import request from '../../services/request';
 
 interface PokemonState {
   loadingStatus: 'idle' | 'loading' | 'succeeded' | 'error';
-  team: any[];
 }
 
 export type Pokemon = { idNumber: number; name: string; url: string };
@@ -15,7 +14,6 @@ const pokemonsAdapter = createEntityAdapter({
 
 const initialState = pokemonsAdapter.getInitialState<PokemonState>({
   loadingStatus: 'idle',
-  team: [],
 });
 
 export const fetchAllPokemons = createAsyncThunk('pokemons/fetchPokemons', async () => {
@@ -26,14 +24,7 @@ export const fetchAllPokemons = createAsyncThunk('pokemons/fetchPokemons', async
 const pokemonsSlice = createSlice({
   name: 'pokemons',
   initialState,
-  reducers: {
-    pokemonAdded: (state, action) => {
-      state.team.push(action.payload);
-    },
-    pokemonDeleted: (state, action) => {
-      state.team.filter((item) => item.idNumber !== action.payload);
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllPokemons.pending, (state) => {
@@ -49,9 +40,7 @@ const pokemonsSlice = createSlice({
       .addDefaultCase(() => {});
   },
 });
-const { actions, reducer } = pokemonsSlice;
+const { reducer } = pokemonsSlice;
 export default reducer;
 
 export const { selectAll } = pokemonsAdapter.getSelectors((state: any) => state.pokemons);
-
-export const { pokemonAdded, pokemonDeleted } = actions;

@@ -1,5 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
-import pokemons from '../components/PokemonSlice/PokemonSlice';
+import pokemons from '../components/slices/PokemonSlice';
+import team from '../components/slices/TeamSlice';
+import coach from '../components/slices/CoachSlice';
 
 const stringMiddleware = () => (next: any) => (action: string | {}) => {
   if (typeof action === 'string') {
@@ -11,7 +13,7 @@ const stringMiddleware = () => (next: any) => (action: string | {}) => {
 };
 
 const store = configureStore({
-  reducer: { pokemons },
+  reducer: { pokemons, team, coach },
   middleware: (getDefaultMiddleware: any) => getDefaultMiddleware().concat(stringMiddleware),
   devTools: process.env.NODE_ENV !== 'production',
 });

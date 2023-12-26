@@ -1,4 +1,4 @@
-import { Pokemon } from '../PokemonSlice/PokemonSlice';
+import { Pokemon } from '../slices/PokemonSlice';
 import Badge, { AddProps } from '../badge/Badge';
 
 interface Team extends Pokemon {
@@ -9,7 +9,7 @@ interface Team extends Pokemon {
 type Props = {
   team: Team[];
   dotShow: (id: number, _: string) => void;
-  removePokemonFromTeam: (name: string) => void;
+  removePokemonFromTeam: (id: number) => void;
   modalOpen: (id: number) => void;
 };
 

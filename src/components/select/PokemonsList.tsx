@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Pokemon } from '../PokemonSlice/PokemonSlice';
+import { Pokemon } from '../slices/PokemonSlice';
 
 type Props = {
   data: Pokemon[];

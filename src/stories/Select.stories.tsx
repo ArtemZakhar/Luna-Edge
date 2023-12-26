@@ -27,8 +27,6 @@ export const Primary: Story = {
       { idNumber: 4, name: 'charmeleon', url: 'https://pokeapi.co/api/v2/pokemon/5/' },
     ],
     label: 'Label',
-    clear: false,
-    validation: true,
     disabled: false,
     helpText: {
       status: 'Team should include 4 pokemons. Remained:',

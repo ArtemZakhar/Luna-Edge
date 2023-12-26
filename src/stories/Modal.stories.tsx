@@ -18,6 +18,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
   args: {
+    showCoachName: false,
+    showSaveButton: false,
     data: [
       {
         id: 1,
