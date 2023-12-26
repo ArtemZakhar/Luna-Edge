@@ -20,9 +20,11 @@ export const Primary: Story = {
   args: {
     placeholder: 'Placeholder',
     label: 'Label',
-    border_hover: 'border-[2px] hover:border-blue-700',
-    border_focus: 'border-[2px] focus-within:border-blue-700',
-    validation: true,
-    disabled: false,
+    style: {
+      border_hover: 'border-[2px] hover:border-blue-700',
+      border_focus: 'border-[2px] focus-within:border-blue-700',
+      disabled: false,
+    },
+    id: 1,
   },
 };

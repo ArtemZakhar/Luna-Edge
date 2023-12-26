@@ -20,6 +20,7 @@ export const Primary: Story = {
   args: {
     showCoachName: false,
     showSaveButton: false,
+    close: () => {},
     data: [
       {
         id: 1,
